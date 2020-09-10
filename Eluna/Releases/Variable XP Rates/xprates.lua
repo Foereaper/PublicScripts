@@ -23,13 +23,6 @@ function Rates.OnGainXP(event, player, amount, victim)
     end
 end
 
-function Rates.OnPetGiveXP(event, player, amount)
-    if(Rates["Cache"][player:GetGUIDLow()] and Rates["Cache"][player:GetGUIDLow()][1] > 1) then
-        amount = amount*Rates["Cache"][player:GetGUIDLow()][1]
-        return amount;    
-    end
-end
-
 function Rates.LoadCache()
     Rates["Cache"] = {}
        
@@ -62,4 +55,3 @@ Rates.LoadCache()
 RegisterPlayerEvent(13, Rates.OnLevelUp)
 RegisterPlayerEvent(30, Rates.OnFirstLogin)
 RegisterPlayerEvent(12, Rates.OnGainXP)
-RegisterPlayerEvent(44, Rates.OnPetGiveXP)
