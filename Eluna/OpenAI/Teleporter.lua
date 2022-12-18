@@ -1,3 +1,13 @@
+[[ 
+	This teleporter was generated using OpenAI (with a good amount of coaching). 
+    The teleporter supports a variable amount of teleport locations per page using OPTIONS_PER_PAGE, as well as faction and level specific teleport options.
+
+	It's not the most advanced script, but this is probably as far as I can take OpenAI in its current form without the need for more hand holding. 
+    Trying to add more features caused the AI to break.
+
+	I have not tested the code other than looking over the logic. It looks alright, so use it as you please.
+]]
+
 -- This script allows a creature to teleport a player to a specified location
 -- when the player selects the appropriate gossip option.
 
