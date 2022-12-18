@@ -1,4 +1,4 @@
-[[
+--[[
     This teleporter was generated using OpenAI (with a good amount of coaching). 
     The teleporter supports a variable amount of teleport locations per page using OPTIONS_PER_PAGE, as well as faction and level specific teleport options.
 
