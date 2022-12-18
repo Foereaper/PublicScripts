@@ -2,12 +2,13 @@
 -- Declare required scripts below
 require("xprates")
 
+-- Table to store various functions and values
 local Comm = {}
 
---[[ Helper Functions BEGIN ]]
-
+-- Helper function to determine whether an account is whitelisted to use the specific command in question
+-- Takes an account ID and a whitelist table as arguments
+-- Returns a boolean indicating whether the account ID is present in the whitelist
 function Comm.IsAccountWhitelisted(accid, whitelist)
-    -- Helper function to determine whether an account is whitelisted to use the specific command in question
     for _, v in pairs(whitelist) do
         if(v == accid) then
             return true;
@@ -17,8 +18,10 @@ function Comm.IsAccountWhitelisted(accid, whitelist)
     return false;
 end
 
+-- Helper function to split a string into a table with each space separated string of the original string as its own value
+-- Takes a string as an argument
+-- Returns a table with each space-separated string of the original string as its own value
 function Comm.SplitString(inputstr)
-    -- Helper function to split a string into a table with each space separated string of the original string as its own value
     local t = {}
     local e, i = 0, 1
     
@@ -51,10 +54,9 @@ function Comm.SplitString(inputstr)
     return t
 end
 
---[[ Helper Functions END ]]
-
---[[ Command Handler Functions BEGIN ]]
-
+-- Function to handle the "xp" command
+-- Takes a command table and a player object as arguments
+-- Sets the player's XP rate to a specified value if it is between 0 and the maximum allowed XP rate
 function Comm.HandleXPCommand(com, player)
     local rateInfo = player:GetXPRateInfo();
     
@@ -70,23 +72,27 @@ function Comm.HandleXPCommand(com, player)
     end
 end
 
---[[ Command Handler Functions END ]]
-
---[[ Raw Handler Function BEGIN ]]
-
+-- Function to handle raw commands
+-- Looks up the appropriate command function from the table of registered commands and calls it if the player has sufficient permissions to use the command
 function Comm.Handler(event, player, command)
+    -- Split the command string into a table of individual words
     local commandTable = Comm.SplitString(command)
     
+    -- Check if the command is present in the Comm.register table
     if(Comm["register"][commandTable[1]]) then
         if(player) then
+            -- Get the security level and whitelist for the command
             local security, whitelist = Comm["register"][commandTable[1]][2], Comm.IsAccountWhitelisted(player:GetAccountId(), Comm["register"][commandTable[1]][3])
         
+            -- Check the player's GM rank or whether their account ID is present in the command's whitelist
             if(player:GetGMRank() >= security or whitelist == true) then
+                -- Call the command's associated command handler function with the command table and player object as arguments
                 Comm["register"][commandTable[1]][1](commandTable, player)
             else
                 player:SendBroadcastMessage("You do not have access to that command!")
             end
         else -- Assume sent from console
+            -- Check if the command can be used from the console
             if(Comm["register"][commandTable[1]][2] >= 4) then
                 Comm["register"][commandTable[1]][1](commandTable, nil)
             end
@@ -96,15 +102,10 @@ function Comm.Handler(event, player, command)
     end
 end
 
---[[ Raw Handler Function END ]]
-
---[[ Registers BEGIN ]]
-
+-- Table to store registered commands and their associated command handler function, security level, and whitelist
 Comm.register = {
     --["commandname"] = {CommandFunction, SecurityLevel, {WhiteListAccIds}}
     ["xp"] = {Comm.HandleXPCommand, 0, {}},
 }
 
 RegisterPlayerEvent(42, Comm.Handler)
-
---[[ Registers END ]]
